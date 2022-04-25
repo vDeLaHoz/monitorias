@@ -25,6 +25,33 @@ const Monitores = () => {
     } 
     
     async function guardar() {
+        const obj = {nombres, apellidos, programa, semestre, documento, celular, correo};
+        const res = await axios.post('http://localhost/db/tbmonitores/', obj);
+        console.log(res.data)
+        obtenerMonitores();
+        clear();
+    }
+
+    async function eliminarMonitor(id){ 
+ 
+        if(window.confirm('¿Deseas eliminar el monitor?')){
+           const res = await axios.delete('http://localhost/db/tbmonitores/?id='+id);
+           obtenerMonitores();
+           console.log(res.data)
+       }
+     }
+
+     async function editarMonitor(e) {
+        e.preventDefault();
+          const obj = {nombres, apellidos, programa, semestre, documento, celular, correo};
+          const res = await axios.put('http://localhost/db/tbmonitores/', obj);
+          console.log(res.data)
+          obtenerMonitores();
+      
+      }
+
+      function guardarEditar(e) {
+          
         if (!nombres.trim()) {
             setError('Llenar todos los campos')
             return
@@ -59,33 +86,6 @@ const Monitores = () => {
             setError('Llenar todos los campos')
             return
         }
-
-        const obj = {nombres, apellidos, programa, semestre, documento, celular, correo};
-        const res = await axios.post('http://localhost/db/tbmonitores/', obj);
-        console.log(res.data)
-        obtenerMonitores();
-        clear();
-    }
-
-    async function eliminarMonitor(id){ 
- 
-        if(window.confirm('¿Deseas eliminar el monitor?')){
-           const res = await axios.delete('http://localhost/db/tbmonitores/?id='+id);
-           obtenerMonitores();
-           console.log(res.data)
-       }
-     }
-
-     async function editarMonitor(e) {
-        e.preventDefault();
-          const obj = {nombres, apellidos, programa, semestre, documento, celular, correo};
-          const res = await axios.put('http://localhost/db/tbmonitores/', obj);
-          console.log(res.data)
-          obtenerMonitores();
-      
-      }
-
-      function guardarEditar(e) {
         e.preventDefault(); 
         vald? guardar():editarMonitor();
         clear();
