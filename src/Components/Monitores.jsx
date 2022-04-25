@@ -51,7 +51,6 @@ const Monitores = () => {
       }
 
       function guardarEditar(e) {
-          
         if (!nombres.trim()) {
             setError('Llenar todos los campos')
             return
@@ -205,6 +204,7 @@ const Monitores = () => {
                     <button  className="btn btn-primary btn-sm" 
                 onClick={(e) => guardarEditar(e)} >
                   {vald?"Agregar":"Editar"} </button> 
+                  <button type="submit" onClick={clear}>Cancelar</button>
                     </div>
                     {error ? <span className='text-danger'>{error}</span> : null}
             </div>
