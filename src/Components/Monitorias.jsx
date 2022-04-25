@@ -9,6 +9,7 @@ const Monitorias = () => {
     const [id, setId] = useState('');
     const [error, setError] = useState('');
     const [lista, setLista] = React.useState([])
+    const [vald, setVald] = React.useState(true)
 
     useEffect(() => {
         obtenerMonitorias();
@@ -21,7 +22,31 @@ const Monitorias = () => {
     } 
 
     async function guardar() {
+        const obj = {materia, monitor, fecha, salon};
+        const res = await axios.post('http://localhost/db/tbmonitorias/', obj);
+        console.log(res.data)
+        obtenerMonitorias();
+        clear();
+    }
 
+    async function eliminarMonitoria(id){ 
+ 
+        if(window.confirm('¿Deseas eliminar la monitoria?')){
+           const res = await axios.delete('http://localhost/db/tbmonitorias/?id='+id);
+           obtenerMonitorias();
+           console.log(res.data)
+       }
+     }
+
+     async function editarMonitoria() {
+          const obj = {materia, monitor, fecha, salon};
+          const res = await axios.put('http://localhost/db/tbmonitorias/', obj);
+          console.log(res.data)
+          obtenerMonitorias();
+      
+      }
+
+      function guardarEditar(e) {
         if (!materia.trim()) {
             setError('Llenar todos los campos')
             return
@@ -41,22 +66,20 @@ const Monitorias = () => {
             setError('Llenar todos los campos')
             return
         }
-
-        const obj = {materia, monitor, fecha, salon};
-        const res = await axios.post('http://localhost/db/tbmonitorias/', obj);
-        console.log(res.data)
-        obtenerMonitorias();
+        e.preventDefault(); 
+        vald? guardar():editarMonitoria();
         clear();
     }
 
-    async function eliminarMonitoria(id){ 
- 
-        if(window.confirm('¿Deseas eliminar la monitoria?')){
-           const res = await axios.delete('http://localhost/db/tbmonitorias/?id='+id);
-           obtenerMonitorias();
-           console.log(res.data)
-       }
-     }
+    async function getMonitoria(id){
+        const res = await axios.get('http://localhost/db/tbmonitorias/?id='+id);
+        setId(res.data.id);
+        setMateria(res.data.materia);
+        setMonitor(res.data.monitor);
+        setFecha(res.data.fecha);
+        setSalon(res.data.salon)
+        setVald(false)
+    } 
 
      function clear(){
         setMateria('')
@@ -64,6 +87,7 @@ const Monitorias = () => {
         setFecha('')
         setSalon('')
         setError(null)
+        setVald(true)
   }
 
 
@@ -118,7 +142,9 @@ const Monitorias = () => {
                                 </div>
                         </div>
                     </form>
-                    <button className="btn btn-primary" type="submit" onClick={guardar}>Agregar</button>
+                    <button  className="btn btn-primary btn-sm" 
+                onClick={(e) => guardarEditar(e)} >
+                  {vald?"Agregar":"Editar"} </button> 
                 </div>
                 {error ? <span className='text-danger'>{error}</span> : null}
             </div>
@@ -141,7 +167,10 @@ const Monitorias = () => {
                                         <td>{item.monitor}</td>
                                         <td>{item.fecha}</td>
                                         <td>{item.salon}</td>
-                                        <td><button  className="btn btn-outline-danger btn-sm " 
+                                        <td>
+                                        <button className="btn btn-success btn-sm mr-2" 
+                           onClick={() => getMonitoria(item.id)} >Editar</button>
+                                            <button  className="btn btn-outline-danger btn-sm " 
                            onClick={() => eliminarMonitoria(item.id)}>Eliminar</button></td>
                                     </tr>
                                 </tbody>

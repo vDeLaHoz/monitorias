@@ -12,6 +12,7 @@ const Monitores = () => {
     const [id, setId] = useState('');
     const [error, setError] = useState('');
     const [lista, setLista] = React.useState([])
+    const [vald, setVald] = React.useState(true)
 
     useEffect(() => {
         obtenerMonitores();
@@ -75,6 +76,34 @@ const Monitores = () => {
        }
      }
 
+     async function editarMonitor(e) {
+        e.preventDefault();
+          const obj = {nombres, apellidos, programa, semestre, documento, celular, correo};
+          const res = await axios.put('http://localhost/db/tbmonitores/', obj);
+          console.log(res.data)
+          obtenerMonitores();
+      
+      }
+
+      function guardarEditar(e) {
+        e.preventDefault(); 
+        vald? guardar():editarMonitor();
+        clear();
+    }
+
+    async function getMonitor(id){
+        const res = await axios.get('http://localhost/db/tbmonitores/?id='+id);
+        setId(res.data.id);
+        setNombres(res.data.nombres);
+        setApellidos(res.data.apellidos);
+        setPrograma(res.data.programa);
+        setSemestre(res.data.semestre);
+        setDocumento(res.data.documento);
+        setCelular(res.data.celular);
+        setCorreo(res.data.correo);
+        setVald(false)
+    } 
+
      function clear(){
             setNombres('')
             setApellidos('')
@@ -84,6 +113,7 @@ const Monitores = () => {
             setCelular('')
             setCorreo('')
             setError(null)
+            setVald(true)
       }
 
     return (
@@ -172,7 +202,9 @@ const Monitores = () => {
                             </div>
                         </div>
                     </form>
-                    <button className="btn btn-primary" type="submit" onClick={guardar}>Agregar</button>
+                    <button  className="btn btn-primary btn-sm" 
+                onClick={(e) => guardarEditar(e)} >
+                  {vald?"Agregar":"Editar"} </button> 
                     </div>
                     {error ? <span className='text-danger'>{error}</span> : null}
             </div>
@@ -202,6 +234,8 @@ const Monitores = () => {
                                         <td>{item.celular}</td>
                                         <td>{item.correo}</td>
                                         <td>
+                                        <button className="btn btn-success btn-sm mr-2" 
+                           onClick={() => getMonitor(item.id)} >Editar</button>
                                             <button  className="btn btn-outline-danger btn-sm " 
                            onClick={() => eliminarMonitor(item.id)}>Eliminar</button></td>
                                     </tr>
