@@ -201,10 +201,10 @@ const Monitores = () => {
                             </div>
                         </div>
                     </form>
-                    <button  className="btn btn-primary btn-sm" 
+                    <button  className="btn btn-primary mb-2" 
                 onClick={(e) => guardarEditar(e)} >
                   {vald?"Agregar":"Editar"} </button> 
-                  <button type="submit" onClick={clear}>Cancelar</button>
+                  <button className="btn btn-primary mb-2" type="submit" onClick={clear}>Cancelar</button>
                     </div>
                     {error ? <span className='text-danger'>{error}</span> : null}
             </div>
